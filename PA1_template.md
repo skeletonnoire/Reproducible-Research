@@ -1,3 +1,4 @@
+
 # Loading and preprocessing the data
 
 **1. Load the data**
@@ -51,6 +52,7 @@ str(data_activity)
 ##  $ date    : Factor w/ 61 levels "2012-10-01","2012-10-02",..: 1 1 1 1 1 1 1 1 1 1 ...
 ##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
+
 
 **2. Process/transform the data (if necessary) into a format suitable for your analysis**
 
@@ -124,8 +126,8 @@ plot(AverageDailyActivity$Group.1,
 
 ![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
 
-# Imputing missing values
 
+# Imputing missing values
 **1.Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)**
 
 We can see what variable that having missing values by using the following commands, where we first create a dataset that contains all the rows with missing data, followed by a nrow command:
@@ -187,7 +189,6 @@ missingdata <-is.na(data_activity_nomiss$steps)
 data_activity_nomiss[missingdata, "steps"] <- AverageDailyActivity$x
 ```
 
-
 **4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?**
 
 As before, we first use the aggregate function to calculate a dataframe whcih consists of total steps each day.
@@ -231,12 +232,21 @@ median(TotalStepsEachDay$x)
 
 Using the dataset with substituted data, we observe that the mean and median is identical to each other. This indicates a normal distribted curve, we also see that replacing the missing value gives a slightly higher mean and median.
 
+
+
 # Are there differences in activity patterns between weekdays and weekends?
 
 1. Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
 
 We can create function that is basically an if statement that is picking out the day of the week, and then set Saturday/Sunday to 'weekend' and any other day to 'weekday'.
 
+First, however, we need to change that date variable into a date format.  If you have a look at the date variable using data_activity_nomiss$date, you will notice that the format is in YYYYMMDD, hence the correct way of formating this into a date variable is as follows:
+
+str(data_activity_nomiss)
+
+data_activity_nomiss$date = as.Date(data_activity_nomiss$date, "%Y-%M-%D")
+
+You can run the str() command again to check that the date format is now correct.
 
 
 ```r
@@ -253,9 +263,8 @@ We then need to append this data to our dataset with no missing data
 
 
 ```r
-data_activity_nomiss$day <- as.factor(sapply(data_activity_nomiss$date, day))
+data_activity_nomiss$day <- as.factor(sapply(data_activity$date, day))
 ```
-
 **2. Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.**
 
 Here, we need to get first greate the average number of steps by inteval across the day variable, so we are in essence using day as a by/class variable. 
@@ -270,6 +279,17 @@ Before you create the two plots you may need to fist run the following commands 
 
 ```r
 require("lattice") 
+```
+
+```
+## Loading required package: lattice
+```
+
+```
+## Warning: package 'lattice' was built under R version 3.1.2
+```
+
+```r
 library("lattice") 
 ```
 
@@ -290,8 +310,5 @@ xyplot(
 
 ![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png) 
 
-
-
-
-
+We can see from these graphs that there both similarities and differences in activity between weekdays adn weekends. For examples, there is - for both weekends and weekdays - a periods of inactivity, which could be during night time. Then there is a spike early on in the day for weekdays, where as activity patterns are more evenly spread over the intervals. 
 
